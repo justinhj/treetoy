@@ -18,8 +18,8 @@ function validateBstProperty(node, min = -Infinity, max = Infinity) {
 }
 
 /**
- * Reconstructs a binary tree from a level-order (breadth-first) serialized array,
- * identical to the representation used by LeetCode (e.g. [5, 3, 7, 1, 4, 6, 8] or [1, 2, 3, null, 4]).
+ * Reconstructs a binary tree from a level-order (breadth-first) serialized array
+ * (e.g. [5, 3, 7, 1, 4, 6, 8] or [1, 2, 3, null, 4]).
  * Passing null or empty array returns null (empty tree).
  * 
  * Throws an Error if:
@@ -89,7 +89,7 @@ export function build_tree(array) {
 }
 
 /**
- * Serializes a binary tree into a LeetCode-style level-order array.
+ * Serializes a binary tree into a level-order (breadth-first) array.
  * Trims trailing null values.
  * @param {TreeNode|null} root
  * @returns {Array<number|null>}

@@ -67,28 +67,6 @@
       color: #475569;
       margin-bottom: 1rem;
     }
-    /* Optional Synchronized Bar */
-    .sync-controller-box {
-      background: #eef2ff;
-      border: 1px solid #c7d2fe;
-      border-radius: 8px;
-      padding: 1rem 1.25rem;
-      margin-bottom: 2rem;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-    }
-    .sync-title {
-      font-weight: 700;
-      color: #3730a3;
-      font-size: 0.95rem;
-    }
-    .sync-subtitle {
-      font-size: 0.82rem;
-      color: #4338ca;
-    }
   </style>
 </head>
 <body>
@@ -106,22 +84,8 @@
       <p>
         In textbook Binary Search Trees, search algorithms look simple on paper. However, in production runtimes, 
         branch mispredictions and redundant leaf/null checks create significant microarchitectural overhead.
-        Below, we explore three distinct search techniques applied to the <strong>exact same tree values</strong> (LeetCode: <code>[8, 4, 12, 2, 6, 10, 14, 1, 3, 5, 7, 9, 11, 13, 15]</code>), searching for key <strong>6</strong>.
+        Below, we explore three distinct search techniques applied to the <strong>exact same tree values</strong> (level-order array: <code>[8, 4, 12, 2, 6, 10, 14, 1, 3, 5, 7, 9, 11, 13, 15]</code>), searching for key <strong>6</strong>.
       </p>
-    </div>
-
-    <!-- OPTIONAL SYNCHRONIZED CONTROLS: Can be toggled or removed easily for clean blog/video captures -->
-    <div class="sync-controller-box" id="syncController">
-      <div>
-        <div class="sync-title">Optional: Synchronized Comparison Bar</div>
-        <div class="sync-subtitle">Control all three algorithms simultaneously to compare step counts, or use each tree's controls below independently.</div>
-      </div>
-      <div class="treetoy-btn-group">
-        <button id="syncPlayBtn" class="treetoy-btn treetoy-btn-primary">▶ Play All</button>
-        <button id="syncStepBtn" class="treetoy-btn">Step All ⏭</button>
-        <button id="syncResetBtn" class="treetoy-btn">↺ Reset All</button>
-        <button id="syncSearchKeyBtn" class="treetoy-btn">Change Search Key (Current: <span id="syncKeyLabel">6</span>)</button>
-      </div>
     </div>
 
     <div class="comparison-grid">
@@ -166,7 +130,7 @@
     let currentSearchKey = 6;
 
     // Initialize 3 independent, fully embeddable trees
-    const treeDefault = TreeToy.create('#tree-default', {
+    TreeToy.create('#tree-default', {
       initialValues: INITIAL_VALUES,
       treeType: 'default',
       searchKey: currentSearchKey,
@@ -176,7 +140,7 @@
       logCollapsible: true
     });
 
-    const treeSentinel = TreeToy.create('#tree-sentinel', {
+    TreeToy.create('#tree-sentinel', {
       initialValues: INITIAL_VALUES,
       treeType: 'sentinel',
       searchKey: currentSearchKey,
@@ -186,7 +150,7 @@
       logCollapsible: true
     });
 
-    const treeTwoWay = TreeToy.create('#tree-twoway', {
+    TreeToy.create('#tree-twoway', {
       initialValues: INITIAL_VALUES,
       treeType: 'two-way',
       searchKey: currentSearchKey,
@@ -194,74 +158,6 @@
       showControls: true,
       showLog: true,
       logCollapsible: true
-    });
-
-    const instances = [treeDefault, treeSentinel, treeTwoWay];
-
-    // Synchronized Master Controls
-    const syncPlayBtn = document.getElementById('syncPlayBtn');
-    const syncStepBtn = document.getElementById('syncStepBtn');
-    const syncResetBtn = document.getElementById('syncResetBtn');
-    const syncSearchKeyBtn = document.getElementById('syncSearchKeyBtn');
-    const syncKeyLabel = document.getElementById('syncKeyLabel');
-
-    let syncPlaying = false;
-    let syncTimer = null;
-
-    function syncPlay() {
-      if (syncPlaying) {
-        syncPause();
-        return;
-      }
-      syncPlaying = true;
-      syncPlayBtn.textContent = '⏸ Pause All';
-
-      function tick() {
-        if (!syncPlaying) return;
-        let anyMoved = false;
-        instances.forEach((inst) => {
-          if (inst.stepForward()) {
-            anyMoved = true;
-          }
-        });
-        if (anyMoved) {
-          syncTimer = setTimeout(tick, 750);
-        } else {
-          syncPause();
-        }
-      }
-      tick();
-    }
-
-    function syncPause() {
-      syncPlaying = false;
-      syncPlayBtn.textContent = '▶ Play All';
-      if (syncTimer) {
-        clearTimeout(syncTimer);
-        syncTimer = null;
-      }
-    }
-
-    syncPlayBtn.addEventListener('click', syncPlay);
-    syncStepBtn.addEventListener('click', () => {
-      syncPause();
-      instances.forEach((inst) => inst.stepForward());
-    });
-    syncResetBtn.addEventListener('click', () => {
-      syncPause();
-      instances.forEach((inst) => inst.reset());
-    });
-    syncSearchKeyBtn.addEventListener('click', () => {
-      syncPause();
-      const input = prompt('Enter a new integer key to search for across all three trees:', String(currentSearchKey));
-      if (input !== null && input.trim() !== '') {
-        const num = parseInt(input, 10);
-        if (!isNaN(num)) {
-          currentSearchKey = num;
-          syncKeyLabel.textContent = String(num);
-          instances.forEach((inst) => inst.search(currentSearchKey, false));
-        }
-      }
     });
   </script>
 </body>

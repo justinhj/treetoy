@@ -3,7 +3,7 @@ Treetoy is a JavaScript library and sample web page for an easily embeddable, in
 The developer can create the tree element on their HTML page with the following parameters, which users can then modify and perform searches on. Those operations proceed step by step, displaying a log of action descriptions as well as the graphical steps.
 
 1. Initial tree values...
-The `build_tree` function reconstructs a binary tree from a level-order (breadth-first) serialized array, identical to the representation used by LeetCode (e.g., `[1, 2, 3, None, 4]`).
+The `build_tree` function reconstructs a binary tree from a level-order (breadth-first) serialized array (e.g., `[1, 2, 3, null, 4]`).
 The user can pass `null` instead of an array to get an empty tree.
 2. Tree type. All three types are binary search trees with minor differences in how search is done:
   a. Default (3-way): In this tree, searches are done in the conventional way. The search checks for less than, equal to, or greater than, and moves to the next node (left or right) or returns `true` if found. It returns `false` at the null leaf.

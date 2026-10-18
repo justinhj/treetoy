@@ -254,7 +254,7 @@ export class TreeToyInstance {
   }
 
   /**
-   * Reconstructs the tree with a new LeetCode serialized array.
+   * Reconstructs the tree with a new level-order (breadth-first) serialized array.
    * @param {Array<number|null>|null} values
    */
   setTreeValues(values) {

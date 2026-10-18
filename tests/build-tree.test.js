@@ -9,7 +9,7 @@ test('build_tree with null or empty array returns null', () => {
   assert.equal(build_tree([null]), null);
 });
 
-test('build_tree reconstructs valid BST from LeetCode array', () => {
+test('build_tree reconstructs valid BST from level-order serialized array', () => {
   // Tree:
   //       5
   //     /   \

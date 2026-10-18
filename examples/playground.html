@@ -146,9 +146,9 @@
 
     <div class="sandbox-panel">
       <div class="panel-grid">
-        <!-- 1. LeetCode Array Builder -->
+        <!-- 1. Level-Order Array Builder -->
         <div class="form-group">
-          <label for="arrayInput">LeetCode Level-Order Array (or empty)</label>
+          <label for="arrayInput">Level-Order (Breadth-First) Array (or empty)</label>
           <input type="text" id="arrayInput" class="form-control" value="[10, 5, 15, 2, 7, 12, 20]">
           <div class="btn-row">
             <button id="buildTreeBtn" class="treetoy-btn treetoy-btn-primary">Build Tree</button>
@@ -238,7 +238,7 @@
       logCollapsible: true
     });
 
-    // Parse LeetCode array string safely
+    // Parse level-order serialized array string safely
     function parseArrayInput(str) {
       if (!str || str.trim() === '' || str.trim() === '[]') return [];
       const cleaned = str.trim().replace(/^\[/, '').replace(/\]$/, '');
