@@ -1,0 +1,27 @@
+{
+  "name": "treetoy",
+  "version": "1.0.0",
+  "description": "Interactive, embeddable binary search tree visualization library with multiple search algorithms",
+  "main": "dist/treetoy.umd.cjs",
+  "module": "dist/treetoy.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "node --test tests/*.test.js"
+  },
+  "keywords": [
+    "binary-search-tree",
+    "bst",
+    "visualization",
+    "algorithms",
+    "sentinel",
+    "interactive"
+  ],
+  "author": "Justin Heyes-Jones",
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}

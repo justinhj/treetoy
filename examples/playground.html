@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Treetoy - Interactive BST Playground</title>
+  <link rel="stylesheet" href="../src/styles/treetoy.css">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #1e293b;
+      background: #f8fafc;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+    }
+    header {
+      margin-bottom: 2rem;
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      font-size: 1.15rem;
+      color: #64748b;
+    }
+    .nav-links {
+      margin-top: 1rem;
+      display: flex;
+      gap: 1rem;
+    }
+    .nav-links a {
+      color: #3b82f6;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .nav-links a:hover {
+      text-decoration: underline;
+    }
+
+    /* Sandbox Panel */
+    .sandbox-panel {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .panel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .form-group label {
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: #334155;
+    }
+    .form-control {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.9rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-family: inherit;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+    .btn-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-top: 0.25rem;
+    }
+    .preset-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+    }
+    .pill-btn {
+      padding: 0.25rem 0.6rem;
+      font-size: 0.78rem;
+      font-weight: 500;
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .pill-btn:hover {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+    .error-alert {
+      display: none;
+      padding: 0.75rem 1rem;
+      margin-top: 1rem;
+      border-radius: 6px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #b91c1c;
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+    .success-alert {
+      display: none;
+      padding: 0.75rem 1rem;
+      margin-top: 1rem;
+      border-radius: 6px;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #047857;
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Interactive Tree Playground</h1>
+      <p class="subtitle">Customize initial BST values, programmatically insert nodes, and test search algorithms.</p>
+      <div class="nav-links">
+        <a href="../index.html">← Back to Overview</a>
+        <a href="comparison.html">View Comparative Blog Demo →</a>
+      </div>
+    </header>
+
+    <div class="sandbox-panel">
+      <div class="panel-grid">
+        <!-- 1. LeetCode Array Builder -->
+        <div class="form-group">
+          <label for="arrayInput">LeetCode Level-Order Array (or empty)</label>
+          <input type="text" id="arrayInput" class="form-control" value="[10, 5, 15, 2, 7, 12, 20]">
+          <div class="btn-row">
+            <button id="buildTreeBtn" class="treetoy-btn treetoy-btn-primary">Build Tree</button>
+            <button id="clearTreeBtn" class="treetoy-btn">Empty Tree</button>
+          </div>
+          <div class="preset-pills">
+            <span style="font-size: 0.75rem; color: #64748b; align-self: center;">Presets:</span>
+            <button class="pill-btn" data-preset="[8, 4, 12, 2, 6, 10, 14, 1, 3, 5, 7, 9, 11, 13, 15]">Full 15-node</button>
+            <button class="pill-btn" data-preset="[10, 5, 15, 2, 7, 12, 20]">Balanced 7-node</button>
+            <button class="pill-btn" data-preset="[4, 2, 6, null, 3, null, 7]">With Nulls</button>
+            <button class="pill-btn" data-preset="[1, null, 2, null, 3, null, 4]">Right Skewed</button>
+          </div>
+        </div>
+
+        <!-- 2. Programmatic Insertion -->
+        <div class="form-group">
+          <label for="insertInput">Programmatic Insertion</label>
+          <input type="number" id="insertInput" class="form-control" placeholder="e.g. 9">
+          <div class="btn-row">
+            <button id="insertBtn" class="treetoy-btn treetoy-btn-primary">+ Insert Node</button>
+          </div>
+          <small style="color: #64748b; font-size: 0.78rem;">
+            Enforces strict set membership: duplicate keys will be rejected with an error.
+          </small>
+        </div>
+
+        <!-- 3. Search Key & Algorithm Selection -->
+        <div class="form-group">
+          <label for="algorithmSelect">Search Algorithm</label>
+          <select id="algorithmSelect" class="form-control">
+            <option value="default">Default (3-Way)</option>
+            <option value="sentinel">Sentinel Search</option>
+            <option value="two-way">Two-Way (Candidate)</option>
+          </select>
+
+          <label for="searchKeyInput" style="margin-top: 0.4rem;">Search Key</label>
+          <div class="btn-row">
+            <input type="number" id="searchKeyInput" class="form-control" value="7" style="flex: 1;">
+            <button id="runSearchBtn" class="treetoy-btn treetoy-btn-primary">Search</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feedback alerts -->
+      <div id="errorAlert" class="error-alert"></div>
+      <div id="successAlert" class="success-alert"></div>
+    </div>
+
+    <!-- Tree Toy Visualization Target -->
+    <div id="playground-tree"></div>
+  </div>
+
+  <script type="module">
+    import { TreeToy } from '../src/index.js';
+
+    const errorAlert = document.getElementById('errorAlert');
+    const successAlert = document.getElementById('successAlert');
+
+    function showError(msg) {
+      errorAlert.textContent = msg;
+      errorAlert.style.display = 'block';
+      successAlert.style.display = 'none';
+    }
+
+    function showSuccess(msg) {
+      successAlert.textContent = msg;
+      successAlert.style.display = 'block';
+      errorAlert.style.display = 'none';
+      setTimeout(() => {
+        successAlert.style.display = 'none';
+      }, 3500);
+    }
+
+    function clearAlerts() {
+      errorAlert.style.display = 'none';
+      successAlert.style.display = 'none';
+    }
+
+    // Initialize TreeToy
+    const tree = TreeToy.create('#playground-tree', {
+      initialValues: [10, 5, 15, 2, 7, 12, 20],
+      treeType: 'default',
+      searchKey: 7,
+      title: 'Interactive BST Playground',
+      showControls: true,
+      showLog: true,
+      logCollapsible: true
+    });
+
+    // Parse LeetCode array string safely
+    function parseArrayInput(str) {
+      if (!str || str.trim() === '' || str.trim() === '[]') return [];
+      const cleaned = str.trim().replace(/^\[/, '').replace(/\]$/, '');
+      if (cleaned === '') return [];
+      return cleaned.split(',').map((item) => {
+        const val = item.trim();
+        if (val === 'null' || val === 'None' || val === '') return null;
+        const num = Number(val);
+        if (isNaN(num)) throw new Error(`Invalid token: "${val}". Must be a number or null.`);
+        return num;
+      });
+    }
+
+    // Build Tree button
+    document.getElementById('buildTreeBtn').addEventListener('click', () => {
+      clearAlerts();
+      try {
+        const raw = document.getElementById('arrayInput').value;
+        const arr = parseArrayInput(raw);
+        tree.setTreeValues(arr.length === 0 ? null : arr);
+        showSuccess(`Tree successfully reconstructed with ${arr.filter(x => x !== null).length} nodes.`);
+      } catch (err) {
+        showError(err.message);
+      }
+    });
+
+    // Clear Tree button
+    document.getElementById('clearTreeBtn').addEventListener('click', () => {
+      clearAlerts();
+      document.getElementById('arrayInput').value = '[]';
+      tree.setTreeValues(null);
+      showSuccess('Tree cleared (empty tree).');
+    });
+
+    // Preset buttons
+    document.querySelectorAll('.pill-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        clearAlerts();
+        const preset = btn.getAttribute('data-preset');
+        document.getElementById('arrayInput').value = preset;
+        try {
+          const arr = parseArrayInput(preset);
+          tree.setTreeValues(arr);
+          showSuccess(`Loaded preset: ${preset}`);
+        } catch (err) {
+          showError(err.message);
+        }
+      });
+    });
+
+    // Programmatic Insertion button
+    document.getElementById('insertBtn').addEventListener('click', () => {
+      clearAlerts();
+      const input = document.getElementById('insertInput');
+      const val = parseFloat(input.value);
+      if (isNaN(val)) {
+        showError('Please enter a valid numeric value to insert.');
+        return;
+      }
+      try {
+        tree.insert(val);
+        showSuccess(`Successfully inserted value ${val} into the BST.`);
+        input.value = '';
+      } catch (err) {
+        showError(err.message);
+      }
+    });
+
+    // Algorithm selection
+    document.getElementById('algorithmSelect').addEventListener('change', (e) => {
+      clearAlerts();
+      try {
+        tree.setTreeType(e.target.value);
+        showSuccess(`Switched tree algorithm to ${e.target.value}.`);
+      } catch (err) {
+        showError(err.message);
+      }
+    });
+
+    // Search Key button
+    document.getElementById('runSearchBtn').addEventListener('click', () => {
+      clearAlerts();
+      const keyVal = parseFloat(document.getElementById('searchKeyInput').value);
+      if (isNaN(keyVal)) {
+        showError('Please enter a valid numeric key to search.');
+        return;
+      }
+      tree.search(keyVal, true);
+    });
+  </script>
+</body>
+</html>

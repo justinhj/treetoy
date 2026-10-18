@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Treetoy - Embeddable Interactive Binary Search Tree</title>
+  <link rel="stylesheet" href="./src/styles/treetoy.css">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #1e293b;
+      background: #f8fafc;
+      margin: 0;
+      padding: 0;
+    }
+    .hero {
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      color: #ffffff;
+      padding: 3.5rem 1.5rem;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 2.75rem;
+      font-weight: 800;
+      margin: 0 0 0.75rem 0;
+      letter-spacing: -0.025em;
+    }
+    .hero p {
+      font-size: 1.25rem;
+      max-width: 680px;
+      margin: 0 auto 1.75rem auto;
+      opacity: 0.95;
+    }
+    .hero-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .btn-lg {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .btn-light {
+      background: #ffffff;
+      color: #1e3a8a;
+    }
+    .btn-light:hover {
+      background: #f1f5f9;
+      transform: translateY(-1px);
+    }
+    .btn-outline {
+      background: transparent;
+      color: #ffffff;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+    }
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-1px);
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin: 2.5rem 0;
+    }
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .card h3 {
+      margin-top: 0;
+      font-size: 1.2rem;
+      color: #0f172a;
+    }
+    .card p {
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 1rem 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 0.88rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <h1>Treetoy</h1>
+    <p>An easily embeddable, interactive JavaScript binary search tree library featuring step-by-step animations and multiple search strategies.</p>
+    <div class="hero-buttons">
+      <a href="./examples/comparison.html" class="btn-lg btn-light">View Algorithm Comparison</a>
+      <a href="./examples/playground.html" class="btn-lg btn-outline">Open Interactive Playground</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>Interactive Live Demo</h2>
+    <p>Below is an embeddable Treetoy instance initialized on this page with key <strong>6</strong> search:</p>
+    
+    <div id="live-tree"></div>
+
+    <h2>Features & Algorithms</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>1. Default (3-Way)</h3>
+        <p>Standard BST search performing less-than, equality, and greater-than tests at every node, explicitly checking leaves for null.</p>
+      </div>
+      <div class="card">
+        <h3>2. Sentinel Search</h3>
+        <p>Attaches sentinel leaves assigned to the search key, eliminating all null checks from the inner traversal loop.</p>
+      </div>
+      <div class="card">
+        <h3>3. Two-Way (Candidate)</h3>
+        <p>Executes only a single strict less-than (<code>&lt;</code>) check per node, tracking candidate equality until a leaf is reached.</p>
+      </div>
+    </div>
+
+    <h2>Quick Start Usage</h2>
+    <pre><code>import { TreeToy } from 'treetoy';
+import 'treetoy/treetoy.css';
+
+// Create an interactive BST widget in any container
+const tree = TreeToy.create('#tree-container', {
+  initialValues: [8, 4, 12, 2, 6, 10, 14],
+  treeType: 'default', // 'default' | 'sentinel' | 'two-way'
+  searchKey: 6,
+  showControls: true,
+  showLog: true,
+  logCollapsible: true
+});
+
+// Programmatic insertion (enforces unique set membership)
+tree.insert(9);
+
+// Trigger a new animated search
+tree.search(10, /* autoPlay */ true);
+</code></pre>
+  </div>
+
+  <script type="module">
+    import { TreeToy } from './src/index.js';
+
+    TreeToy.create('#live-tree', {
+      initialValues: [8, 4, 12, 2, 6, 10, 14, 1, 3, 5, 7, 9, 11, 13, 15],
+      treeType: 'default',
+      searchKey: 6,
+      title: 'Sample Embeddable TreeToy Instance',
+      showControls: true,
+      showLog: true,
+      logCollapsible: true
+    });
+  </script>
+</body>
+</html>
