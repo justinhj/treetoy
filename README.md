@@ -1,20 +1,182 @@
-Treetoy is a JavaScript library and sample web page for an easily embeddable, interactive binary search tree.
+# Treetoy
 
-The developer can create the tree element on their HTML page with the following parameters, which users can then modify and perform searches on. Those operations proceed step by step, displaying a log of action descriptions as well as the graphical steps.
+An easily embeddable, interactive JavaScript library for visualizing Binary Search Trees (BST) with step-by-step animations and multiple search strategies.
 
-1. Initial tree values...
-The `build_tree` function reconstructs a binary tree from a level-order (breadth-first) serialized array (e.g., `[1, 2, 3, null, 4]`).
-The user can pass `null` instead of an array to get an empty tree.
-2. Tree type. All three types are binary search trees with minor differences in how search is done:
-  a. Default (3-way): In this tree, searches are done in the conventional way. The search checks for less than, equal to, or greater than, and moves to the next node (left or right) or returns `true` if found. It returns `false` at the null leaf.
-  b. Sentinel: In this mode, a sentinel node is inserted at all the leaves as the tree is built. When the user searches for a key, the sentinel nodes are assigned that value. Now the search log does not show null checks because it can skip them; instead, when it finds the search key, it returns `true` unless the node is the sentinel, in which case it returns `false`.
-  c. Two-way: In the two-way search, we display a candidate node which starts as `null`. As the search progresses, we check only less than at each step. If the search key is less than the current node, then we go left. If it is >=, then we go right, but we also store the current key value as the candidate. At the end of the tree (when we hit null), we can check if the candidate is the search key or not.
-3. Search key. The key to search for. When this is set, the first animation will show searching for this key.
+Designed for blog posts, educational materials, and technical documentation, **Treetoy** renders interactive SVG trees with dedicated playback controls, animated state transitions, and collapsible action logs detailing every decision and pointer movement.
 
-We should have functions that can be called programmatically to add elements to the tree. 
+---
 
-The library can be used in two ways. The main goal is to put it into the web page, which is a blog about BST search; therefore, the developer specifies the parameters above and the search animates. For user experience, we should add a play button and a reset button. We also want a hideable log of actions in addition to animating the search. 
+## Features
 
-The output we are looking for is a sample web page with an example of each search type on the same tree values. 
+- **Three Distinct Search Algorithms**:
+  - **Default (3-Way)**: Traditional BST search testing less-than, equal, or greater-than (`<`, `==`, `>`) at each node, checking for null at leaves.
+  - **Sentinel Search**: Inserts sentinel nodes at every leaf position and assigns them the search key, eliminating null checks during traversal.
+  - **Two-Way (Candidate-Based)**: Traverses with only a single strict less-than (`<`) test per node, tracking a *candidate* pointer whenever `target >= current.val`, deferring equality verification until a leaf is reached.
+- **Level-Order Array Reconstitution**: Construct trees directly from standard level-order (breadth-first) serialized arrays (e.g. `[8, 4, 12, 2, 6, 10, 14]`, including arrays with `null` gaps). Supports empty trees with `[]` or `null`.
+- **Strict Set Membership**: Rejects duplicate keys with informative errors upon construction and insertion, matching the semantics of a set member test.
+- **Programmatic Manipulation**: Add nodes on the fly with `tree.insert(value)`, rebuild trees with `tree.setTreeValues(...)`, or switch search algorithms dynamically.
+- **Full Playback Engine**: Play, pause, step forward, step backward, seek, reset, and configurable playback speed (0.5x to 2x).
+- **Collapsible Action Log**: Real-time narrative step log explaining each comparison, branch decision, and state change.
+- **Zero Runtime Dependencies**: Written in pure ES Modules with clean SVG rendering and CSS styling.
 
-Another sample web page should provide a full interactive version with input elements for the parameters so a user can play with and test the library.
+---
+
+## Demos
+
+Treetoy includes two sample pages out of the box:
+
+1. **Algorithm Comparison Demo (`examples/comparison.html`)**:
+   A blog-style article showing all three search strategies (3-Way, Sentinel, and Two-Way) running side-by-side on identical tree values with independent controls—ideal for video walkthroughs and technical articles.
+2. **Interactive Playground (`examples/playground.html`)**:
+   A sandbox to experiment with custom level-order arrays, presets, programmatic node insertion, algorithm switching, and search parameters.
+
+---
+
+## Running Locally
+
+Clone the repository and install dev dependencies:
+
+```bash
+git clone https://github.com/justinhj/treetoy.git
+cd treetoy
+npm install
+```
+
+Start the local development server:
+
+```bash
+npm run dev
+```
+
+Open your browser to:
+- Overview & Live Demo: [http://localhost:5173/](http://localhost:5173/)
+- Comparison Demo: [http://localhost:5173/examples/comparison.html](http://localhost:5173/examples/comparison.html)
+- Interactive Playground: [http://localhost:5173/examples/playground.html](http://localhost:5173/examples/playground.html)
+
+### Running Tests & Building
+
+Run the unit tests (Node.js native test runner):
+
+```bash
+npm test
+```
+
+Create production builds in `dist/`:
+
+```bash
+npm run build
+```
+
+---
+
+## Embedding in a Web Page
+
+### 1. Using ES Modules
+
+Include the CSS stylesheet and import `TreeToy`:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="path/to/treetoy.css">
+</head>
+<body>
+  <!-- Container element for the tree widget -->
+  <div id="tree-container"></div>
+
+  <script type="module">
+    import { TreeToy } from './path/to/treetoy.js';
+
+    // Initialize an interactive BST
+    const tree = TreeToy.create('#tree-container', {
+      initialValues: [8, 4, 12, 2, 6, 10, 14, 1, 3, 5, 7, 9, 11, 13, 15],
+      treeType: 'default', // 'default' | 'sentinel' | 'two-way'
+      searchKey: 6,
+      showControls: true,
+      showLog: true,
+      logCollapsible: true,
+      speed: 700
+    });
+
+    // Programmatic insertion (enforces unique keys)
+    tree.insert(16);
+
+    // Trigger an animated search
+    tree.search(11, /* autoPlay */ true);
+  </script>
+</body>
+</html>
+```
+
+### 2. Using UMD (Script Tag)
+
+For non-module setups or older static site generators:
+
+```html
+<link rel="stylesheet" href="path/to/treetoy.css">
+<div id="tree-container"></div>
+
+<script src="path/to/treetoy.umd.cjs"></script>
+<script>
+  const tree = TreeToy.TreeToy.create('#tree-container', {
+    initialValues: [10, 5, 15, 2, 7, 12, 20],
+    treeType: 'two-way',
+    searchKey: 7
+  });
+</script>
+```
+
+---
+
+## Configuration Options
+
+Pass these options to `TreeToy.create(target, options)`:
+
+| Option | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `initialValues` | `Array<number\|null>\|null` | `[5, 3, 7, 1, 4, 6, 8]` | Level-order (breadth-first) serialized array or `null` for an empty tree. |
+| `treeType` | `'default' \| 'sentinel' \| 'two-way'` | `'default'` | The BST search strategy to execute. |
+| `searchKey` | `number \| null` | `null` | Initial key to search for on load. |
+| `showControls`| `boolean` | `true` | Display playback bar (Play/Pause, Step, Reset, Speed). |
+| `showLog` | `boolean` | `true` | Display the textual step-by-step action log. |
+| `logCollapsible` | `boolean` | `true` | Allow users to expand/collapse the action log drawer. |
+| `speed` | `number` | `700` | Animation delay in milliseconds per step. |
+| `title` | `string \| null` | `null` | Custom title displayed in the header. |
+| `autoPlay` | `boolean` | `false` | Automatically begin playback after initialization. |
+
+---
+
+## Instance Methods
+
+Instances returned by `TreeToy.create()` provide programmatic control:
+
+| Method | Description |
+| :--- | :--- |
+| `tree.insert(value)` | Programmatically inserts a number into the BST. Throws an error if the value already exists. |
+| `tree.search(key, autoPlay = false)` | Prepares step-by-step search traces for `key` and optionally starts playback. |
+| `tree.setTreeType(type)` | Changes algorithm (`'default'`, `'sentinel'`, `'two-way'`), reconfigures leaves, and recalculates steps. |
+| `tree.setTreeValues(array)` | Reconstructs the tree with a new level-order array. |
+| `tree.play()` | Starts or resumes animation playback. |
+| `tree.pause()` | Pauses the ongoing animation. |
+| `tree.stepForward()` | Advances one step forward in the search trace. |
+| `tree.stepBackward()` | Steps one step backward. |
+| `tree.reset()` | Resets the animation back to the initial state. |
+| `tree.toggleLog(visible?)` | Toggles or sets the visibility of the action log. |
+
+---
+
+## Algorithm Comparison Reference
+
+| Search Type | Branching per Node | Null Checks | Equality Testing |
+| :--- | :--- | :--- | :--- |
+| **Default (3-Way)** | 3-way (`<`, `==`, `>`) | Checked at every step/leaf | Checked at every visited node |
+| **Sentinel** | 2-way (`<`, `>`) | **None** (sentinels eliminate null checks) | Checked against target or sentinel |
+| **Two-Way** | 1-way (strict `<` only) | Traverses until leaf is reached | **Single test** at the end against candidate |
+
+---
+
+## License
+
+MIT © [Justin Heyes-Jones](https://github.com/justinhj)
